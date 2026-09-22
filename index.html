@@ -1,0 +1,848 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>BudgetBuddy — Expense &amp; Budget Tracker</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><circle cx=%2250%22 cy=%2250%22 r=%2245%22 fill=%22%23c99a3b%22/><text y=%2266%22 x=%2250%22 text-anchor=%22middle%22 font-size=%2254%22 font-weight=%22bold%22 fill=%22%2316382c%22 font-family=%22sans-serif%22>₹</text></svg>">
+</head>
+<body>
+
+  <!-- ==================== TOP NAVIGATION BAR ==================== -->
+  <header class="topbar">
+    <div class="topbar-brand">
+      <div class="brand-mark">₹</div>
+      <div class="brand-text">
+        <span class="brand-name">BudgetBuddy</span>
+        <span class="brand-tagline">Financial Ledger &amp; Budget Manager</span>
+      </div>
+    </div>
+
+    <!-- Active User & Quick Controls (Visible when logged in) -->
+    <div class="topbar-actions" id="auth-nav-items">
+      <div class="user-profile-chip">
+        <span class="user-avatar" id="header-user-badge">👤 User</span>
+        <span class="role-badge role-user" id="header-role-badge">User</span>
+      </div>
+
+      <button class="primary-btn btn-sm" id="btn-quick-add-tx" title="Record new transaction">
+        + Record Entry
+      </button>
+
+      <button class="ghost-btn icon-only-btn" id="btn-toggle-theme" title="Toggle Light / Dark theme">
+        🌓
+      </button>
+
+      <button class="ghost-btn btn-sm text-danger" id="btn-logout" title="Sign out of BudgetBuddy">
+        Logout
+      </button>
+    </div>
+  </header>
+
+  <!-- ==================== MAIN TAB BAR ==================== -->
+  <nav class="sub-nav" id="main-nav-tabs">
+    <div class="nav-container">
+      <a href="#dashboard" class="nav-link active" data-tab="dashboard">
+        <span class="nav-icon">📊</span> Dashboard
+      </a>
+      <a href="#transactions" class="nav-link" data-tab="transactions">
+        <span class="nav-icon">💸</span> Transactions
+      </a>
+      <a href="#budget" class="nav-link" data-tab="budget">
+        <span class="nav-icon">💰</span> Budgets
+      </a>
+      <a href="#accounts" class="nav-link" data-tab="accounts">
+        <span class="nav-icon">🏦</span> Accounts &amp; Categories
+      </a>
+      <a href="#recurring" class="nav-link" data-tab="recurring">
+        <span class="nav-icon">🔄</span> Recurring Bills
+      </a>
+      <a href="#analytics" class="nav-link" data-tab="analytics">
+        <span class="nav-icon">📈</span> Analytics &amp; Reports
+      </a>
+      <!-- Admin Tab (Visible only to Admin users) -->
+      <a href="#admin" class="nav-link nav-link-admin" data-tab="admin" id="tab-admin-nav" style="display: none;">
+        <span class="nav-icon">🛡️</span> Admin Console
+      </a>
+      <a href="#settings" class="nav-link" data-tab="settings">
+        <span class="nav-icon">⚙️</span> Settings
+      </a>
+    </div>
+  </nav>
+
+  <!-- ==================== APPLICATION VIEWS CONTAINER ==================== -->
+  <main class="app-main">
+
+    <!-- ==================== VIEW 1: AUTHENTICATION (LOGIN / SIGNUP) ==================== -->
+    <section id="view-auth" class="view-section">
+      <div class="auth-container">
+        <!-- Login Box -->
+        <div class="card auth-card" id="auth-login-box">
+          <div class="auth-header">
+            <div class="brand-mark large">₹</div>
+            <h2>Sign In to BudgetBuddy</h2>
+            <p class="auth-subtitle">Choose a demo account or sign in with your credentials</p>
+          </div>
+
+          <!-- Faculty Quick-Demo Buttons -->
+          <div class="demo-quick-box">
+            <p class="demo-label">Quick Faculty Evaluation Logins:</p>
+            <div class="demo-btn-group">
+              <button type="button" class="demo-btn demo-btn-user" id="btn-demo-user">
+                <span class="demo-icon">👤</span>
+                <span class="demo-text">
+                  <strong>Demo User</strong>
+                  <small>user@budgetbuddy.com</small>
+                </span>
+              </button>
+              <button type="button" class="demo-btn demo-btn-admin" id="btn-demo-admin">
+                <span class="demo-icon">👑</span>
+                <span class="demo-text">
+                  <strong>Faculty Admin</strong>
+                  <small>admin@budgetbuddy.com</small>
+                </span>
+              </button>
+            </div>
+          </div>
+
+          <div class="divider"><span>OR ENTER DETAILS</span></div>
+
+          <form id="login-form">
+            <div class="form-group">
+              <label for="login-email">Email Address</label>
+              <input type="email" id="login-email" placeholder="e.g. user@budgetbuddy.com" required>
+            </div>
+            <div class="form-group">
+              <label for="login-password">Password</label>
+              <input type="password" id="login-password" placeholder="••••••••" required>
+            </div>
+            <button type="submit" class="primary-btn btn-block">Sign In</button>
+          </form>
+
+          <div class="auth-footer">
+            <p>New to BudgetBuddy? <a href="#" id="switch-to-signup">Create an Account</a></p>
+          </div>
+        </div>
+
+        <!-- Signup Box (Hidden by default) -->
+        <div class="card auth-card" id="auth-signup-box" style="display: none;">
+          <div class="auth-header">
+            <div class="brand-mark large">₹</div>
+            <h2>Create New Account</h2>
+            <p class="auth-subtitle">Get started with your personal budget ledger</p>
+          </div>
+
+          <form id="signup-form">
+            <div class="form-group">
+              <label for="signup-name">Full Name</label>
+              <input type="text" id="signup-name" placeholder="e.g. Priya Sharma" required>
+            </div>
+            <div class="form-group">
+              <label for="signup-email">Email Address</label>
+              <input type="email" id="signup-email" placeholder="e.g. priya@example.com" required>
+            </div>
+            <div class="form-group">
+              <label for="signup-password">Password</label>
+              <input type="password" id="signup-password" placeholder="At least 4 characters" minlength="4" required>
+            </div>
+            <div class="form-group">
+              <label for="signup-role">Account Role</label>
+              <select id="signup-role">
+                <option value="user">Normal User (Personal Finance)</option>
+                <option value="admin">Administrator (System &amp; User Control)</option>
+              </select>
+            </div>
+            <button type="submit" class="primary-btn btn-block">Register Account</button>
+          </form>
+
+          <div class="auth-footer">
+            <p>Already have an account? <a href="#" id="switch-to-login">Sign In here</a></p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==================== VIEW 2: USER DASHBOARD ==================== -->
+    <section id="view-dashboard" class="view-section">
+      <!-- 4 High Level Stat Cards -->
+      <div class="stat-grid">
+        <div class="card stat-card stat-net">
+          <div class="stat-label">Net Balance</div>
+          <div class="stat-value" id="dash-net-balance">₹0.00</div>
+          <div class="stat-sub">Across all registered accounts</div>
+        </div>
+        <div class="card stat-card stat-inc">
+          <div class="stat-label">Total Inflow</div>
+          <div class="stat-value text-income" id="dash-total-income">₹0.00</div>
+          <div class="stat-sub">Salary, freelance &amp; deposits</div>
+        </div>
+        <div class="card stat-card stat-exp">
+          <div class="stat-label">Total Outflow</div>
+          <div class="stat-value text-expense" id="dash-total-expenses">₹0.00</div>
+          <div class="stat-sub">Expenses &amp; recurring bills</div>
+        </div>
+        <div class="card stat-card stat-sav">
+          <div class="stat-label">Savings Rate</div>
+          <div class="stat-value text-gold" id="dash-savings-rate">0%</div>
+          <div class="stat-sub">Income retained</div>
+        </div>
+      </div>
+
+      <div class="dashboard-columns">
+        <!-- Left Col: Budget tracker & Quick Upcoming -->
+        <div class="dash-col">
+          <!-- Monthly Budget Widget -->
+          <div class="card">
+            <div class="card-heading">
+              <h2>Monthly Budget Status</h2>
+              <a href="#budget" class="card-link" onclick="BudgetBuddy.App.switchTab('budget')">Adjust Limit &rarr;</a>
+            </div>
+            <div class="budget-bar-track">
+              <div class="budget-bar-fill" id="dash-budget-bar"></div>
+            </div>
+            <p class="budget-status" id="dash-budget-status">Calculating monthly limit...</p>
+          </div>
+
+          <!-- Upcoming Payments Widget -->
+          <div class="card">
+            <div class="card-heading">
+              <h2>Upcoming Bills &amp; Subscriptions</h2>
+              <a href="#recurring" class="card-link" onclick="BudgetBuddy.App.switchTab('recurring')">Manage &rarr;</a>
+            </div>
+            <ul class="reminder-list" id="dash-upcoming-list">
+              <!-- Rendered by JS -->
+            </ul>
+          </div>
+        </div>
+
+        <!-- Right Col: Recent Ledger Entries -->
+        <div class="dash-col">
+          <div class="card">
+            <div class="card-heading">
+              <h2>Recent Transactions</h2>
+              <a href="#transactions" class="card-link" onclick="BudgetBuddy.App.switchTab('transactions')">View All &rarr;</a>
+            </div>
+            <ul class="recent-list" id="dash-recent-list">
+              <!-- Rendered by JS -->
+            </ul>
+            <p class="empty-hint" id="dash-recent-empty" style="display: none;">No transactions logged yet.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==================== VIEW 3: TRANSACTIONS LEDGER ==================== -->
+    <section id="view-transactions" class="view-section">
+      <div class="card">
+        <div class="card-heading list-heading">
+          <div>
+            <h2>Transaction Ledger</h2>
+            <span class="sub-counter" id="tx-count-badge">0 records</span>
+          </div>
+          <button class="primary-btn btn-sm" onclick="BudgetBuddy.App.prepareTxModal(); BudgetBuddy.App.openModal('modal-transaction');">
+            + Add Transaction
+          </button>
+        </div>
+
+        <!-- Multi-Filter & Search Controls -->
+        <div class="filter-toolbar">
+          <div class="search-box">
+            <input type="text" id="tx-search-input" placeholder="Search description, notes, or category...">
+          </div>
+          <div class="filter-controls">
+            <select id="tx-filter-type">
+              <option value="all">All Types</option>
+              <option value="expense">Expenses Only</option>
+              <option value="income">Income Only</option>
+            </select>
+            <select id="tx-filter-category">
+              <option value="all">All Categories</option>
+            </select>
+            <select id="tx-filter-account">
+              <option value="all">All Accounts</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Table Display matching faculty requirement -->
+        <div class="table-responsive">
+          <table class="ledger-table">
+            <thead>
+              <tr>
+                <th>Date</th>
+                <th>Description</th>
+                <th>Category</th>
+                <th>Account</th>
+                <th>Type</th>
+                <th>Amount</th>
+                <th class="action-header">Actions</th>
+              </tr>
+            </thead>
+            <tbody id="tx-table-body">
+              <!-- Rendered by JS -->
+            </tbody>
+          </table>
+          <p class="empty-hint" id="tx-empty-hint" style="display: none;">No transactions match the selected criteria.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==================== VIEW 4: BUDGET MANAGEMENT ==================== -->
+    <section id="view-budget" class="view-section">
+      <div class="budget-layout">
+        <!-- Set Monthly Overall Budget -->
+        <div class="card">
+          <div class="card-heading">
+            <h2>Overall Monthly Spending Limit</h2>
+          </div>
+          <form id="budget-monthly-form" class="inline-form">
+            <input type="number" id="budget-monthly-input" placeholder="Enter monthly target (e.g. 25000)" min="1" step="100" required>
+            <button type="submit" class="primary-btn">Save Limit</button>
+          </form>
+          <div class="budget-bar-track">
+            <div class="budget-bar-fill" id="budget-overall-track"></div>
+          </div>
+          <p class="budget-status" id="budget-overall-text">Loading budget status...</p>
+        </div>
+
+        <!-- Set Category Specific Budget -->
+        <div class="card">
+          <div class="card-heading">
+            <h2>Set Category-Wise Budget</h2>
+          </div>
+          <form id="budget-cat-form" class="cat-budget-form">
+            <div class="form-row">
+              <div class="form-field">
+                <label for="budget-cat-select">Category</label>
+                <select id="budget-cat-select">
+                  <option value="Food">🍲 Food</option>
+                  <option value="Travel">🚌 Travel</option>
+                  <option value="Shopping">🛍️ Shopping</option>
+                  <option value="Education">📚 Education</option>
+                  <option value="Bills">⚡ Bills</option>
+                  <option value="Entertainment">🍿 Entertainment</option>
+                  <option value="Health">💊 Health</option>
+                </select>
+              </div>
+              <div class="form-field">
+                <label for="budget-cat-amount">Monthly Limit (₹)</label>
+                <input type="number" id="budget-cat-amount" placeholder="e.g. 5000" min="1" step="50" required>
+              </div>
+              <div class="form-field form-field-btn">
+                <button type="submit" class="primary-btn">Set Budget</button>
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+
+      <!-- Category-wise Progress Cards Grid -->
+      <div class="section-title">
+        <h2>Category Budget Progress &amp; Thresholds</h2>
+      </div>
+      <div class="cat-budgets-grid" id="category-budgets-grid">
+        <!-- Rendered by JS -->
+      </div>
+    </section>
+
+    <!-- ==================== VIEW 5: ACCOUNTS & CATEGORIES ==================== -->
+    <section id="view-accounts" class="view-section">
+      <div class="accounts-header-row">
+        <div>
+          <h2>Payment Accounts &amp; Balances</h2>
+          <p class="text-muted">Track Cash, Bank Accounts, UPI Wallets, and Credit Cards</p>
+        </div>
+        <button class="primary-btn btn-sm" id="btn-open-add-acc">+ Add Account</button>
+      </div>
+
+      <!-- Accounts Grid -->
+      <div class="accounts-grid" id="accounts-cards-grid">
+        <!-- Rendered by JS -->
+      </div>
+
+      <div class="accounts-header-row" style="margin-top: 36px;">
+        <div>
+          <h2>Active Income &amp; Expense Categories</h2>
+          <p class="text-muted">Pre-configured system categories and user-defined custom categories</p>
+        </div>
+        <button class="ghost-btn btn-sm" id="btn-open-add-cat">+ New Category</button>
+      </div>
+
+      <!-- Category Tags Cloud -->
+      <div class="categories-cloud" id="categories-tag-cloud">
+        <!-- Rendered by JS -->
+      </div>
+    </section>
+
+    <!-- ==================== VIEW 6: RECURRING BILLS ==================== -->
+    <section id="view-recurring" class="view-section">
+      <div class="accounts-header-row">
+        <div>
+          <h2>Recurring Payments &amp; Subscriptions</h2>
+          <p class="text-muted">Automate reminders for rent, EMI, broadband, and digital subscriptions</p>
+        </div>
+        <button class="primary-btn btn-sm" id="btn-open-add-rec">+ Schedule Payment</button>
+      </div>
+
+      <div class="recurring-list-grid" id="recurring-items-list">
+        <!-- Rendered by JS -->
+      </div>
+      <p class="empty-hint" id="recurring-empty-hint" style="display: none;">No recurring schedules added yet.</p>
+    </section>
+
+    <!-- ==================== VIEW 7: ANALYTICS & REPORTS ==================== -->
+    <section id="view-analytics" class="view-section">
+      <!-- Analytics Filter Header -->
+      <div class="analytics-toolbar card">
+        <div class="toolbar-title">
+          <h2>Financial Reports &amp; Canvas Visualizations</h2>
+          <p class="text-muted">Zero external chart libraries — Pure HTML5 Canvas &amp; CSS</p>
+        </div>
+        <div class="toolbar-filter">
+          <label for="analytics-date-filter">Period:</label>
+          <select id="analytics-date-filter">
+            <option value="all">All Time</option>
+            <option value="this_month" selected>This Month</option>
+            <option value="last_3_months">Last 3 Months</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Top Metric Summary -->
+      <div class="stat-grid" style="margin-bottom: 24px;">
+        <div class="card stat-card">
+          <div class="stat-label">Period Income</div>
+          <div class="stat-value text-income" id="analytics-inc">₹0.00</div>
+        </div>
+        <div class="card stat-card">
+          <div class="stat-label">Period Expenses</div>
+          <div class="stat-value text-expense" id="analytics-exp">₹0.00</div>
+        </div>
+        <div class="card stat-card">
+          <div class="stat-label">Net Surplus / Savings</div>
+          <div class="stat-value text-gold" id="analytics-sav">₹0.00</div>
+        </div>
+      </div>
+
+      <!-- Native Canvas Charts Grid -->
+      <div class="charts-grid">
+        <!-- Chart 1: Category Breakdown (Donut) -->
+        <div class="card chart-card">
+          <div class="card-heading">
+            <h2>Spending by Category</h2>
+          </div>
+          <canvas id="chart-category-canvas" width="480" height="260" class="canvas-chart"></canvas>
+        </div>
+
+        <!-- Chart 2: Income vs Expense Dual Bar -->
+        <div class="card chart-card">
+          <div class="card-heading">
+            <h2>Income vs. Expense Flow</h2>
+          </div>
+          <canvas id="chart-comparison-canvas" width="480" height="260" class="canvas-chart"></canvas>
+        </div>
+
+        <!-- Chart 3: Monthly Spending Trends -->
+        <div class="card chart-card">
+          <div class="card-heading">
+            <h2>Expense Spending Trends</h2>
+          </div>
+          <canvas id="chart-trend-canvas" width="480" height="260" class="canvas-chart"></canvas>
+        </div>
+
+        <!-- Chart 4: Textual & CSS Distribution Bars (As requested in prompt) -->
+        <div class="card chart-card">
+          <div class="card-heading">
+            <h2>Expense Distribution (Text &amp; Bar)</h2>
+          </div>
+          <div class="dist-bars-container" id="distribution-bars-container">
+            <!-- Rendered by JS -->
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==================== VIEW 8: ADMIN CONSOLE ==================== -->
+    <section id="view-admin" class="view-section">
+      <!-- Admin Overview Stat Cards -->
+      <div class="stat-grid">
+        <div class="card stat-card stat-admin">
+          <div class="stat-label">Total Users</div>
+          <div class="stat-value" id="admin-stat-users">0</div>
+          <div class="stat-sub">Registered in system</div>
+        </div>
+        <div class="card stat-card stat-admin">
+          <div class="stat-label">Active Users</div>
+          <div class="stat-value text-income" id="admin-stat-active">0</div>
+          <div class="stat-sub">Account enabled</div>
+        </div>
+        <div class="card stat-card stat-admin">
+          <div class="stat-label">Total Transactions</div>
+          <div class="stat-value text-gold" id="admin-stat-tx">0</div>
+          <div class="stat-sub">System ledger count</div>
+        </div>
+        <div class="card stat-card stat-admin">
+          <div class="stat-label">System Expense Volume</div>
+          <div class="stat-value text-expense" id="admin-stat-volume">₹0.00</div>
+          <div class="stat-sub">Tracked outflow</div>
+        </div>
+      </div>
+
+      <!-- User Management Section -->
+      <div class="card admin-section-card">
+        <div class="card-heading list-heading">
+          <div>
+            <h2>User Account Management</h2>
+            <p class="text-muted">Search, activate, deactivate, or delete user profiles</p>
+          </div>
+          <div class="search-box">
+            <input type="text" id="admin-user-search" placeholder="Search user name or email...">
+          </div>
+        </div>
+
+        <div class="table-responsive">
+          <table class="ledger-table">
+            <thead>
+              <tr>
+                <th>User Name</th>
+                <th>Email Address</th>
+                <th>Role</th>
+                <th>Status</th>
+                <th>Joined</th>
+                <th class="action-header">Action</th>
+              </tr>
+            </thead>
+            <tbody id="admin-users-tbody">
+              <!-- Rendered by JS -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="admin-dual-grid">
+        <!-- Global Category Management -->
+        <div class="card">
+          <div class="card-heading">
+            <h2>Global Categories Control</h2>
+          </div>
+          <form id="admin-add-cat-form" class="inline-form" style="margin-bottom: 16px;">
+            <input type="text" id="admin-cat-name" placeholder="Category name" required style="flex:2;">
+            <select id="admin-cat-type" style="flex:1;">
+              <option value="expense">Expense</option>
+              <option value="income">Income</option>
+            </select>
+            <input type="color" id="admin-cat-color" value="#c99a3b" style="width: 45px; padding: 4px;">
+            <button type="submit" class="primary-btn btn-sm">Add</button>
+          </form>
+
+          <div class="table-responsive">
+            <table class="ledger-table">
+              <thead>
+                <tr>
+                  <th>Category</th>
+                  <th>Type</th>
+                  <th>Color</th>
+                  <th>Status</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody id="admin-cat-tbody">
+                <!-- Rendered by JS -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Audit & Activity Logs -->
+        <div class="card">
+          <div class="card-heading">
+            <h2>System Audit &amp; Activity Log</h2>
+          </div>
+          <ul class="audit-log-list" id="admin-audit-logs">
+            <!-- Rendered by JS -->
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==================== VIEW 9: SETTINGS & DATA ==================== -->
+    <section id="view-settings" class="view-section">
+      <div class="settings-grid">
+        <!-- Profile Settings Card -->
+        <div class="card">
+          <div class="card-heading">
+            <h2>User Profile Details</h2>
+          </div>
+          <form id="settings-profile-form">
+            <div class="form-group">
+              <label for="settings-name">Full Name</label>
+              <input type="text" id="settings-name" required>
+            </div>
+            <div class="form-group">
+              <label for="settings-email">Email Address</label>
+              <input type="email" id="settings-email" required>
+            </div>
+            <div class="form-group">
+              <label for="settings-cur-pass">Current Password (optional)</label>
+              <input type="password" id="settings-cur-pass" placeholder="Leave empty if not changing">
+            </div>
+            <div class="form-group">
+              <label for="settings-new-pass">New Password (optional)</label>
+              <input type="password" id="settings-new-pass" placeholder="Minimum 4 characters">
+            </div>
+            <button type="submit" class="primary-btn">Save Profile Changes</button>
+          </form>
+        </div>
+
+        <!-- Preferences & Display -->
+        <div class="card">
+          <div class="card-heading">
+            <h2>Display Preferences</h2>
+          </div>
+          <div class="form-group">
+            <label for="settings-currency-select">Primary Currency Symbol</label>
+            <select id="settings-currency-select">
+              <option value="₹">₹ — Indian Rupee (INR)</option>
+              <option value="$">$ — US Dollar (USD)</option>
+              <option value="€">€ — Euro (EUR)</option>
+              <option value="£">£ — British Pound (GBP)</option>
+              <option value="¥">¥ — Japanese Yen (JPY)</option>
+            </select>
+            <small class="text-muted">Updates currency formatting across all ledgers, budgets, and cards</small>
+          </div>
+
+          <div class="setting-toggle-row">
+            <div>
+              <strong>Dark Mode Theme</strong>
+              <p class="text-muted" style="margin: 2px 0 0; font-size: 0.85rem;">Toggle dark accounting ledger palette</p>
+            </div>
+            <label class="switch">
+              <input type="checkbox" id="settings-darkmode-toggle">
+              <span class="slider round"></span>
+            </label>
+          </div>
+        </div>
+
+        <!-- Data Management & Export Tools -->
+        <div class="card">
+          <div class="card-heading">
+            <h2>Data Management &amp; Export</h2>
+          </div>
+          <p class="text-muted">Export your records for external accounting or print a consolidated summary report.</p>
+
+          <div class="data-tools-buttons">
+            <button class="ghost-btn btn-block" id="btn-export-csv">
+              📥 Export Transactions (CSV)
+            </button>
+            <button class="ghost-btn btn-block" id="btn-print-report">
+              🖨️ Print Financial Report
+            </button>
+            <button class="ghost-btn btn-block text-danger" id="btn-reset-data">
+              ⚠️ Reset Database to Sample Seed Data
+            </button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ==================== MODALS ==================== -->
+
+  <!-- Modal 1: Add / Edit Transaction -->
+  <div class="modal" id="modal-transaction" aria-hidden="true">
+    <div class="modal-backdrop"></div>
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3 id="modal-tx-title">Record Transaction</h3>
+        <button class="modal-close" title="Close dialog">&times;</button>
+      </div>
+      <form id="tx-form">
+        <input type="hidden" id="tx-id">
+
+        <div class="form-group">
+          <label for="tx-type">Transaction Type</label>
+          <select id="tx-type" required>
+            <option value="expense">💸 Expense (Outflow)</option>
+            <option value="income">💰 Income (Inflow)</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label for="tx-desc">Description / Title</label>
+          <input type="text" id="tx-desc" placeholder="e.g. Lunch Buffet, Monthly Salary, Books" required>
+        </div>
+
+        <div class="form-row">
+          <div class="form-field">
+            <label for="tx-amount">Amount</label>
+            <input type="number" id="tx-amount" min="0.01" step="0.01" placeholder="0.00" required>
+          </div>
+          <div class="form-field">
+            <label for="tx-date">Date</label>
+            <input type="date" id="tx-date" required>
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-field">
+            <label for="tx-category">Category</label>
+            <select id="tx-category" required></select>
+          </div>
+          <div class="form-field">
+            <label for="tx-account">Account</label>
+            <select id="tx-account" required></select>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="tx-notes">Notes / Tag (Optional)</label>
+          <input type="text" id="tx-notes" placeholder="e.g. Reimbursement pending, Semester reading">
+        </div>
+
+        <div class="modal-footer">
+          <button type="button" class="ghost-btn modal-close">Cancel</button>
+          <button type="submit" class="primary-btn">Save Transaction</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Modal 2: Add Account -->
+  <div class="modal" id="modal-add-account" aria-hidden="true">
+    <div class="modal-backdrop"></div>
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3>Create New Account</h3>
+        <button class="modal-close">&times;</button>
+      </div>
+      <form id="form-add-account">
+        <div class="form-group">
+          <label for="new-acc-name">Account Name</label>
+          <input type="text" id="new-acc-name" placeholder="e.g. ICICI Savings, Paytm Wallet" required>
+        </div>
+        <div class="form-group">
+          <label for="new-acc-type">Account Type</label>
+          <select id="new-acc-type">
+            <option value="bank">🏛️ Bank Account</option>
+            <option value="cash">💵 Cash / Petty Cash</option>
+            <option value="upi">📱 UPI / Digital Wallet</option>
+            <option value="credit_card">💳 Credit Card</option>
+            <option value="savings">💰 Savings / FD</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="new-acc-balance">Starting Balance (₹)</label>
+          <input type="number" id="new-acc-balance" step="0.01" value="0.00" required>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="ghost-btn modal-close">Cancel</button>
+          <button type="submit" class="primary-btn">Add Account</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Modal 3: Add Custom Category -->
+  <div class="modal" id="modal-add-category" aria-hidden="true">
+    <div class="modal-backdrop"></div>
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3>Create Custom Category</h3>
+        <button class="modal-close">&times;</button>
+      </div>
+      <form id="form-add-category">
+        <div class="form-group">
+          <label for="new-cat-name">Category Name</label>
+          <input type="text" id="new-cat-name" placeholder="e.g. Hobbies, Pet Care, Fitness" required>
+        </div>
+        <div class="form-row">
+          <div class="form-field">
+            <label for="new-cat-type">Type</label>
+            <select id="new-cat-type">
+              <option value="expense">Expense</option>
+              <option value="income">Income</option>
+            </select>
+          </div>
+          <div class="form-field">
+            <label for="new-cat-color">Color</label>
+            <input type="color" id="new-cat-color" value="#c99a3b" style="height: 42px; padding: 4px;">
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="ghost-btn modal-close">Cancel</button>
+          <button type="submit" class="primary-btn">Save Category</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Modal 4: Add Recurring Expense -->
+  <div class="modal" id="modal-add-recurring" aria-hidden="true">
+    <div class="modal-backdrop"></div>
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3>Schedule Recurring Payment</h3>
+        <button class="modal-close">&times;</button>
+      </div>
+      <form id="form-add-recurring">
+        <div class="form-group">
+          <label for="rec-title">Bill / Subscription Title</label>
+          <input type="text" id="rec-title" placeholder="e.g. Netflix, Rent, Internet, Gym EMI" required>
+        </div>
+        <div class="form-row">
+          <div class="form-field">
+            <label for="rec-amount">Amount (₹)</label>
+            <input type="number" id="rec-amount" min="1" step="0.01" placeholder="0.00" required>
+          </div>
+          <div class="form-field">
+            <label for="rec-frequency">Frequency</label>
+            <select id="rec-frequency">
+              <option value="monthly">Monthly</option>
+              <option value="weekly">Weekly</option>
+              <option value="yearly">Yearly</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-field">
+            <label for="rec-category">Category</label>
+            <select id="rec-category" required></select>
+          </div>
+          <div class="form-field">
+            <label for="rec-account">Payment Account</label>
+            <select id="rec-account" required></select>
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="rec-duedate">Next Due Date</label>
+          <input type="date" id="rec-duedate" required>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="ghost-btn modal-close">Cancel</button>
+          <button type="submit" class="primary-btn">Schedule Bill</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer class="page-footer">
+    <p><strong>BudgetBuddy</strong> &bull; Front End Development Project &bull; Strictly HTML5, CSS3 &amp; Modular JavaScript</p>
+  </footer>
+
+  <!-- ==================== MODULAR JAVASCRIPT ARCHITECTURE ==================== -->
+  <script src="js/storage.js"></script>
+  <script src="js/auth.js"></script>
+  <script src="js/user.js"></script>
+  <script src="js/transactions.js"></script>
+  <script src="js/accounts.js"></script>
+  <script src="js/budget.js"></script>
+  <script src="js/recurring.js"></script>
+  <script src="js/analytics.js"></script>
+  <script src="js/admin.js"></script>
+  <script src="js/settings.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
