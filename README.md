@@ -51,38 +51,10 @@ The login page features **1-Click Quick Demo Buttons** for instant evaluation:
 
 ---
 
-## 🚀 How to Run the Application
 
-### Option A: Local Node Server (Recommended)
-```bash
-node server.js
-```
-Open your browser and navigate to: **`http://localhost:3000`**
 
-### Option B: Direct Browser Launch
-Simply double-click **`index.html`** to open it directly in Google Chrome, Microsoft Edge, Mozilla Firefox, or Safari.
 
----
 
-## 🐙 Git & GitHub Instructions
 
-To push this project to your GitHub account:
 
-1. **Check Git Status**:
-   ```bash
-   git status
-   ```
 
-2. **Stage and Commit all files**:
-   ```bash
-   git add .
-   git commit -m "Initial commit: Modular BudgetBuddy 9-module expense tracker"
-   ```
-
-3. **Link to your GitHub repository**:
-   Create a new repository on [GitHub](https://github.com/new) named `BudgetBuddy`, then run:
-   ```bash
-   git remote add origin https://github.com/<YOUR_GITHUB_USERNAME>/BudgetBuddy.git
-   git branch -M main
-   git push -u origin main
-   ```
